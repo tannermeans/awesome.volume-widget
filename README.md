@@ -46,8 +46,8 @@ No extra Awesome libraries are required, but the widget does use the
    volume keys on your keyboard.
 
 	```
-	awful.key({}, "XF86AudioRaiseVolume", function() volume:down() end),
-	awful.key({}, "XF86AudioLowerVolume", function() volume:up() end),
+	awful.key({}, "XF86AudioRaiseVolume", function() volume:up() end),
+	awful.key({}, "XF86AudioLowerVolume", function() volume:down() end),
 	```
 
 6. Finally, to add your widget to the bar, you'll have to add the following
@@ -71,3 +71,6 @@ table.
   The default is `5`.
 - **channel**: The channel that the widget should be modifying the volume of.
   the default is `Master`.
+- **card**: The card that the widget should modify the volume of.
+  The default is your computer's default card and differs per installation.
+  To get the available cards: ```aplay -l | awk -F \: '/,/{print $2}' | awk '{print $1}' | uniq```

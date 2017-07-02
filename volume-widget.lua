@@ -22,6 +22,7 @@ function Volume:new(args)
 	obj.backend = args.backend or "alsa"
 	obj.step = args.step or 5
 	obj.device = args.device or "Master"
+	obj.card = parseCardOpt(args.card)
 
 	-- Create imagebox widget
 	obj.widget = wibox.widget.imagebox()
@@ -55,7 +56,7 @@ end
 
 function Volume:up()
 	if self.backend == "alsa" then
-		run("amixer set " .. self.device .. " " .. self.step .. "+")
+		run("amixer set " .. self.device .. " " .. self.card .. self.step .. "+")
 	elseif self.backend == "pulseaudio" then
 		run("pactl set-sink-volume " .. self.device .. " +" .. self.step .. "%");
 	end
@@ -64,7 +65,7 @@ end
 
 function Volume:down()
 	if self.backend == "alsa" then
-		run("amixer set " .. self.device .. " " .. self.step .. "-")
+		run("amixer set " .. self.device .. " " .. self.card .. self.step .. "-")
 	elseif self.backend == "pulseaudio" then
 		run("pactl set-sink-volume " .. self.device .. " -" .. self.step .. "%");
 	end
@@ -74,7 +75,7 @@ end
 function Volume:getVolume()
 	local result
 	if self.backend == "alsa" then
-		result = run("amixer get " .. self.device)
+		result = run("amixer get " .. self.card .. self.device)
 	elseif self.backend == "pulseaudio" then
 		result = 50
 	end
@@ -83,6 +84,10 @@ end
 
 function Volume.mt:__call(...)
     return Volume.new(...)
+end
+
+function parseCardOpt(c)
+	return c ~= nil and string.len(c) > 0 and (" -c " .. c .. " ") or ""
 end
 
 return Volume
